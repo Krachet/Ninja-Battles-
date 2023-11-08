@@ -16,7 +16,7 @@ public class MovingPlatforms : MonoBehaviour
 
     void Update()
     {
-        transform.position = Vector3.Lerp(transform.position, target, speed * Time.deltaTime);
+        transform.position = Vector3.MoveTowards(transform.position, target, speed * Time.deltaTime);
 
         if (Vector2.Distance(transform.position, target) < 0.1f)
         {

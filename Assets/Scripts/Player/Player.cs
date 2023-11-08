@@ -33,9 +33,10 @@ public class Player : Character
 
     public override void OnInit()
     {
+        base.OnInit();
         isDead = false;
         isAttacking = false;
-        
+    
         transform.position = savePoint;
         Changeanim("Idle");
     }
