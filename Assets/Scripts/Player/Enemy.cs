@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -9,6 +10,11 @@ public class Enemy : Character
     [SerializeField] private Rigidbody2D rb;
 
     private iState currentState;
+
+    private bool isRight = true;
+
+    private Character target;
+    public Character Target => target;
 
     private void Update()
     {
@@ -49,6 +55,25 @@ public class Enemy : Character
         }
     }
 
+    internal void SetTarget(Character character)
+    {
+        this.target = character;
+
+        //doan nay sai logic khi no set target = null no se bug null neu k check
+        if(Target != null && InRange())
+        {
+            ChangeState(new AttackState());
+        }
+        else if (Target != null)
+        {
+            ChangeState(new PatrolState());
+        }
+        else
+        {
+            ChangeState(new Idle());
+        }
+
+    }
     public void Moving()
     {
         Changeanim("Run");
@@ -68,7 +93,22 @@ public class Enemy : Character
 
     public bool InRange()
     {
-        return false;
+        return Vector2.Distance(target.transform.position, transform.position) <= range;
+    }
+
+    private void OnTriggerEnter2D(Collider2D collision)
+    {
+        if (collision.CompareTag("DirectionPoint"))
+        {
+            ChangeDirection(!isRight);
+        }
+    }
+
+    public void ChangeDirection(bool isRight)
+    {
+        this.isRight = isRight;
+
+        transform.rotation = isRight ? Quaternion.Euler(Vector3.zero) : Quaternion.Euler(Vector3.up * 180);
     }
 
 

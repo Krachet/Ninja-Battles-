@@ -26,15 +26,24 @@ public class PatrolState : iState
     public void OnExecute(Enemy enemy)
     {
         timer += Time.deltaTime;
-        if (timer < randomTime)
+
+        if (enemy.Target != null)
         {
+            enemy.ChangeDirection(enemy.Target.transform.position.x > enemy.transform.position.x);
             enemy.Moving();
         }
+
         else
         {
-            enemy.ChangeState(new Idle());
+            if (timer < randomTime)
+            {
+                enemy.Moving();
+            }
+            else
+            {
+                enemy.ChangeState(new Idle());
+            }
         }
-       
     }
 
     public void OnExit(Enemy enemy)
