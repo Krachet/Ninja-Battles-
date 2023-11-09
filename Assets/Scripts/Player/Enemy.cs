@@ -8,6 +8,7 @@ public class Enemy : Character
     [SerializeField] private float range;
     [SerializeField] private float moveSpeed;
     [SerializeField] private Rigidbody2D rb;
+    [SerializeField] private GameObject attackArea;
 
     private iState currentState;
 
@@ -18,7 +19,7 @@ public class Enemy : Character
 
     private void Update()
     {
-        if (currentState != null)
+        if (currentState != null && !IsDead)
         {
             currentState.OnExecute(this);
         }
@@ -28,16 +29,21 @@ public class Enemy : Character
         base.OnInit();
 
         ChangeState(new Idle());
+        InActiveAttack();
     }
 
     public override void OnDespawn()
     {
         base.OnDespawn();
+        Destroy(gameObject);
     }
 
     protected override void OnDeath()
     {
+        Changeanim("Die");
+        ChangeState(null);
         base.OnDeath();
+        GameController.Instance.decreaseEnemyCount();
     }
 
     public void ChangeState(iState newState)
@@ -88,7 +94,9 @@ public class Enemy : Character
 
     public void Attack()
     {
-
+        Changeanim("Attack");
+        ActiveAttack();
+        Invoke(nameof(InActiveAttack), 0.5f);
     }
 
     public bool InRange()
@@ -102,6 +110,11 @@ public class Enemy : Character
         {
             ChangeDirection(!isRight);
         }
+
+        if (collision.CompareTag("Deathzone"))
+        {
+            OnDeath();
+        }   
     }
 
     public void ChangeDirection(bool isRight)
@@ -111,5 +124,13 @@ public class Enemy : Character
         transform.rotation = isRight ? Quaternion.Euler(Vector3.zero) : Quaternion.Euler(Vector3.up * 180);
     }
 
+    private void ActiveAttack()
+    {
+        attackArea.SetActive(true);
+    }
 
+    private void InActiveAttack()
+    {
+        attackArea.SetActive(false);
+    }
 }

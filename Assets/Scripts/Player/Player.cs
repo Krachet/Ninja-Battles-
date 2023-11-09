@@ -7,7 +7,9 @@ public class Player : Character
 {
     [SerializeField] private Rigidbody2D rb;
     [SerializeField] private LayerMask ground;
-    
+    [SerializeField] private GameObject kunaiPrefab;
+    [SerializeField] private Transform kunaiSpawnPoint;
+    [SerializeField] private GameObject attackArea;
     [SerializeField] private float speed;
     [SerializeField] private float jumpForce;
 
@@ -25,25 +27,23 @@ public class Player : Character
 
     private Vector3 savePoint;
     // Start is called before the first frame update
-    void Start()
-    {
-        SavePoint();
-        OnInit();   
-    }
 
     public override void OnInit()
     {
         base.OnInit();
-        isDead = false;
         isAttacking = false;
     
         transform.position = savePoint;
         Changeanim("Idle");
+
+        InActiveAttack();
+        SavePoint();
     }
 
     public override void OnDespawn()
     {
         base.OnDespawn();
+        OnInit();
     }
 
     protected override void OnDeath()
@@ -63,7 +63,7 @@ public class Player : Character
         //    return;
         //}
 
-        if (isDead)
+        if (IsDead)
         {
             return;
         }
@@ -130,8 +130,8 @@ public class Player : Character
         Changeanim("Attack");
         isAttacking = true;
         Invoke(nameof(ResetAttack), 0.5f);
-        //ActiveAttack();
-        //Invoke(nameof(deActiveAttack), 0.5f);
+        ActiveAttack();
+        Invoke(nameof(InActiveAttack), 0.5f);
     }
 
     public void Throw()
@@ -140,7 +140,7 @@ public class Player : Character
         isAttacking = true;
         Invoke(nameof(ResetAttack), 0.5f);
 
-        //Instantiate(kunaiPrefab, kunaiSpawnPoint.position, kunaiSpawnPoint.rotation);
+        Instantiate(kunaiPrefab, kunaiSpawnPoint.position, kunaiSpawnPoint.rotation);
     }
 
     private void ResetAttack()
@@ -169,6 +169,16 @@ public class Player : Character
 
             Invoke(nameof(OnInit), 1f);
         }
+    }
+    
+    private void ActiveAttack()
+    {
+        attackArea.SetActive(true);
+    }
+
+    private void InActiveAttack()
+    {
+        attackArea.SetActive(false);
     }
 
     internal void SavePoint()

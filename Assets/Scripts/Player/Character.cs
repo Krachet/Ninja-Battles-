@@ -5,6 +5,7 @@ using UnityEngine;
 public class Character : MonoBehaviour
 {
     [SerializeField] private Animator anim;
+    [SerializeField] private Healthbar healthbar;
 
     private float hp;
     private string currentAnim;
@@ -19,6 +20,7 @@ public class Character : MonoBehaviour
     public virtual void OnInit()
     {
         hp = 100;
+        healthbar.OnInit(100);
     }
 
 
@@ -30,7 +32,8 @@ public class Character : MonoBehaviour
 
     protected virtual void OnDeath()
     {
-        OnDespawn();
+        Changeanim("Die");
+        Invoke(nameof(OnDespawn), 1f);
     }
 
     public void OnHit(float damage)

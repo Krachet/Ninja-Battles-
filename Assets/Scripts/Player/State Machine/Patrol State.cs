@@ -30,7 +30,14 @@ public class PatrolState : iState
         if (enemy.Target != null)
         {
             enemy.ChangeDirection(enemy.Target.transform.position.x > enemy.transform.position.x);
-            enemy.Moving();
+            if (enemy.InRange())
+            {
+                enemy.ChangeState(new AttackState());
+            }
+            else
+            {
+                enemy.Moving();
+            }
         }
 
         else
