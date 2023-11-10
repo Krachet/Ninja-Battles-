@@ -337,6 +337,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   anim: {fileID: 8303880530118190278}
+  healthbar: {fileID: 0}
   range: 1
   moveSpeed: 2
   rb: {fileID: 9105919980504650697}
