@@ -169,6 +169,16 @@ public class Player : Character
             Invoke(nameof(OnInit), 1f);
         }
     }
+    
+    //private void ActiveAttack()
+    //{
+    //    attackArea.SetActive(true);
+    //}
+
+    //private void InActiveAttack()
+    //{
+    //    attackArea.SetActive(false);
+    //}
 
     internal void SavePoint()
     {
