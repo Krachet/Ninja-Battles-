@@ -7,6 +7,7 @@ public class Character : MonoBehaviour
     [SerializeField] private Animator anim;
     [SerializeField] protected Healthbar healthbar;
 
+    private iState currentState;
     private float hp;
     private string currentAnim;
 
@@ -23,7 +24,13 @@ public class Character : MonoBehaviour
         //healthbar.OnInit(100, transform);
     }
 
-
+    private void Update()
+    {
+        if (currentState != null)
+        {
+            currentState.OnExecute(this);
+        }
+    }
 
     public virtual void OnDespawn()
     {
@@ -64,5 +71,15 @@ public class Character : MonoBehaviour
             currentAnim = animName;
             anim.SetTrigger(currentAnim);
         }
+    }
+
+    protected void ChangeState(iState newState)
+    {
+        if (currentState != null)
+        {
+            currentState.OnExit(this);
+        }
+        currentState = newState;
+        currentState.OnEnter(this);
     }
 }

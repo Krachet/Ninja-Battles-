@@ -11,9 +11,9 @@ public class Player : Character
     [SerializeField] private float speed;
     [SerializeField] private float jumpForce;
 
-    //[SerializeField] private Kunai kunaiPrefab;
-    //[SerializeField] private Transform kunaiSpawnPoint;
-    //[SerializeField] private GameObject attackArea;
+    [SerializeField] private Kunai kunaiPrefab;
+    [SerializeField] private Transform kunaiSpawnPoint;
+    [SerializeField] private GameObject attackArea;
 
     private bool isGrounded = true;
     private bool isJumping = false;
@@ -129,8 +129,8 @@ public class Player : Character
         Changeanim("Attack");
         isAttacking = true;
         Invoke(nameof(ResetAttack), 0.5f);
-        //ActiveAttack();
-        //Invoke(nameof(deActiveAttack), 0.5f);
+        ActiveAttack();
+        Invoke(nameof(InActiveAttack), 0.5f);
     }
 
     public void Throw()
@@ -139,7 +139,7 @@ public class Player : Character
         isAttacking = true;
         Invoke(nameof(ResetAttack), 0.5f);
 
-        //Instantiate(kunaiPrefab, kunaiSpawnPoint.position, kunaiSpawnPoint.rotation);
+        Instantiate(kunaiPrefab, kunaiSpawnPoint.position, kunaiSpawnPoint.rotation);
     }
 
     private void ResetAttack()
@@ -169,16 +169,16 @@ public class Player : Character
             Invoke(nameof(OnInit), 1f);
         }
     }
-    
-    //private void ActiveAttack()
-    //{
-    //    attackArea.SetActive(true);
-    //}
 
-    //private void InActiveAttack()
-    //{
-    //    attackArea.SetActive(false);
-    //}
+    private void ActiveAttack()
+    {
+        attackArea.SetActive(true);
+    }
+
+    private void InActiveAttack()
+    {
+        attackArea.SetActive(false);
+    }
 
     internal void SavePoint()
     {

@@ -25,8 +25,8 @@ public class Enemy : Character
     {
         base.OnInit();
 
-        //ChangeState(new Idle());
-        //InActiveAttack();
+        ChangeState(new Idle());
+        InActiveAttack();
     }
 
     public override void OnDespawn()
