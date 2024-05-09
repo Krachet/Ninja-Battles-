@@ -1,4 +1,3 @@
-using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -9,9 +8,11 @@ public class Enemy : Character
     [SerializeField] private float moveSpeed;
     [SerializeField] private Rigidbody2D rb;
     [SerializeField] private GameObject attackArea;
+    [SerializeField] private GameObject healtpot;
 
     private iState currentState;
 
+    private float randomNum;
     private bool isRight = true;
 
     private Character target;
@@ -27,7 +28,6 @@ public class Enemy : Character
     public override void OnInit() 
     {
         base.OnInit();
-
         ChangeState(new Idle());
         InActiveAttack();
     }
@@ -35,7 +35,11 @@ public class Enemy : Character
     public override void OnDespawn()
     {
         base.OnDespawn();
-        Destroy(healthbar.gameObject);
+        randomNum = Random.Range(0, 2);
+        if (randomNum == 1)
+        {
+            Instantiate(healtpot, transform.position, transform.rotation);
+        }
         Destroy(gameObject);
     }
 

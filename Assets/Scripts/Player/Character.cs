@@ -6,6 +6,7 @@ public class Character : MonoBehaviour
 {
     [SerializeField] private Animator anim;
     [SerializeField] protected Healthbar healthbar;
+    [SerializeField] private CombatText combatTextPrefab;
 
     private float hp;
     private string currentAnim;
@@ -20,7 +21,7 @@ public class Character : MonoBehaviour
     public virtual void OnInit()
     {
         hp = 100;
-        healthbar.OnInit(100, transform);
+        healthbar.OnInit(hp);
     }
 
 
@@ -47,7 +48,14 @@ public class Character : MonoBehaviour
                 OnDeath();
             }
             healthbar.SetHp(hp);
+            Instantiate(combatTextPrefab, transform.position + Vector3.up, Quaternion.identity).OnInit(damage);
         }
+    }
+
+    public void Heal(float amount)
+    {
+        hp += amount;
+        healthbar.SetHp(hp);
     }
 
     protected void Changeanim(string animName)

@@ -2,6 +2,8 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.EventSystems;
+using UnityEngine.UI;
 
 public class Player : Character
 {
@@ -13,26 +15,42 @@ public class Player : Character
     [SerializeField] private float speed;
     [SerializeField] private float jumpForce;
 
-    //[SerializeField] private Kunai kunaiPrefab;
-    //[SerializeField] private Transform kunaiSpawnPoint;
-    //[SerializeField] private GameObject attackArea;
+    [SerializeField] private EventTrigger leftButton;
+    [SerializeField] private EventTrigger rightButton;
+    [SerializeField] private EventTrigger jumpButton;
+    [SerializeField] private EventTrigger attackButton;
+    [SerializeField] private EventTrigger throwButton;
+
 
     private bool isGrounded = true;
     private bool isJumping = false;
     private bool isAttacking = false;
     private bool isDead = false;
+    private bool berserk = false;
+    private bool isUiControlled = false;
 
     private float horizontal;
-    
+    private float resetAttackTimer = 1f;
 
     private Vector3 savePoint;
     // Start is called before the first frame update
 
+    public void OnUIMoveClicked(float h)
+    {
+        isUiControlled = true;
+        horizontal = h;
+    }
+
+    public void OnUIMoveReleased()
+    {
+        horizontal = 0;
+        isUiControlled = false;
+    }
     public override void OnInit()
     {
         base.OnInit();
         isAttacking = false;
-    
+
         transform.position = savePoint;
         Changeanim("Idle");
 
@@ -54,18 +72,23 @@ public class Player : Character
     // Update is called once per frame
     void Update()
     {
+        Debug.Log("UI CONTROLLED = " + isUiControlled);
         isGrounded = Checkground();
 
-        horizontal = Input.GetAxisRaw("Horizontal");
-
-        //if (IsDead)
+        //if (!isUiControlled)
         //{
-        //    return;
+        //    horizontal = Input.GetAxisRaw("Horizontal");
         //}
 
         if (IsDead)
         {
             return;
+        }
+
+        if (healthbar.GetHp() <= 50f && !berserk)
+        {
+            berserk = true;
+            speed = speed * 2;
         }
 
         if (isAttacking)
@@ -74,33 +97,33 @@ public class Player : Character
             return;
         }
 
-        if (isGrounded)
-        {
-            if (isJumping)
-            {
-                return;
-            }
+        //if (isGrounded)
+        //{
+        //    if (isJumping)
+        //    {
+        //        return;
+        //    }
 
-            if (Input.GetKeyDown(KeyCode.Space) && isGrounded)
-            {
-                Jump();
-            }
+        //    if (Input.GetKeyDown(KeyCode.Space) && isGrounded)
+        //    {
+        //        Jump();
+        //    }
 
-            if (Mathf.Abs(horizontal) > 0.1f && isGrounded)
-            {
-                Changeanim("Run");
-            }
+        //    if (Mathf.Abs(horizontal) > 0.1f && isGrounded)
+        //    {
+        //        Changeanim("Run");
+        //    }
 
-            if (Input.GetKeyDown(KeyCode.J) && isGrounded)
-            {
-                Attack();
-            }
+        //    if (Input.GetKeyDown(KeyCode.J) && isGrounded)
+        //    {
+        //        Attack();
+        //    }
 
-            if (Input.GetKeyDown(KeyCode.K) && isGrounded)
-            {
-                Throw();
-            }
-        }
+        //    if (Input.GetKeyDown(KeyCode.K) && isGrounded)
+        //    {
+        //        Throw();
+        //    }
+        //}
 
         if (!isGrounded && rb.velocity.y < 0.1f)
         {
@@ -129,16 +152,17 @@ public class Player : Character
     {
         Changeanim("Attack");
         isAttacking = true;
-        Invoke(nameof(ResetAttack), 0.5f);
         ActiveAttack();
-        Invoke(nameof(InActiveAttack), 0.5f);
+        Invoke(nameof(ResetAttack), 0.5f);
+
+        Invoke(nameof(InActiveAttack), resetAttackTimer);
     }
 
     public void Throw()
     {
         Changeanim("Throw");
         isAttacking = true;
-        Invoke(nameof(ResetAttack), 0.5f);
+        Invoke(nameof(ResetAttack), resetAttackTimer);
 
         Instantiate(kunaiPrefab, kunaiSpawnPoint.position, kunaiSpawnPoint.rotation);
     }
@@ -170,7 +194,12 @@ public class Player : Character
             Invoke(nameof(OnInit), 1f);
         }
     }
-    
+
+    private void EnterBerserk()
+    {
+        speed = speed * 2;
+    }
+
     private void ActiveAttack()
     {
         attackArea.SetActive(true);

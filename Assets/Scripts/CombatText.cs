@@ -1,18 +1,20 @@
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 
 public class CombatText : MonoBehaviour
 {
-    // Start is called before the first frame update
-    void Start()
+    [SerializeField] TextMeshProUGUI combatText;
+    public void OnInit(float damage)
     {
-        
+        Debug.Log("Hit");
+        combatText.text = damage.ToString();
+        Invoke(nameof(OnDespawn), 1f);
     }
 
-    // Update is called once per frame
-    void Update()
+    public void OnDespawn()
     {
-        
+        Destroy(gameObject);
     }
 }

@@ -11,11 +11,24 @@ public class GameController : Singleton<GameController>
     void Start()
     {
         StartCoroutine(respawnEnemy());
+
+        if (!PlayerPrefs.HasKey("Stage"))
+        {
+            PlayerPrefs.SetInt("Stage", 1);
+        }
+
+        int stage;
+        stage = PlayerPrefs.GetInt("Stage");
+
+        if (stage == 2)
+        {
+
+        }
     }
 
     IEnumerator  respawnEnemy()
     {
-        if (enemyCount < 5)
+        if (enemyCount < 2)
         {
             respawn(respawnPoint[Random.Range(0, respawnPoint.Length)].transform);
         }
