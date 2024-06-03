@@ -133,6 +133,7 @@ public class Player : Character
 
         if (Mathf.Abs(horizontal) > 0.1f)
         {
+            Changeanim("Run");
             rb.velocity = new Vector2(horizontal * speed * Time.deltaTime, rb.velocity.y);
             transform.rotation = Quaternion.Euler(0, horizontal > 0 ? 0 : 180, 0);
         }
