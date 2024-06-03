@@ -5,6 +5,8 @@ using UnityEngine;
 public class Character : MonoBehaviour
 {
     [SerializeField] private Animator anim;
+    [SerializeField] protected Healthbar healthbar;
+    [SerializeField] private CombatText combatTextPrefab;
 
     private float hp;
     private string currentAnim;
@@ -19,6 +21,7 @@ public class Character : MonoBehaviour
     public virtual void OnInit()
     {
         hp = 100;
+        healthbar.OnInit(hp);
     }
 
 
@@ -30,7 +33,8 @@ public class Character : MonoBehaviour
 
     protected virtual void OnDeath()
     {
-        OnDespawn();
+        Changeanim("Die");
+        Invoke(nameof(OnDespawn), 1f);
     }
 
     public void OnHit(float damage)
@@ -40,9 +44,18 @@ public class Character : MonoBehaviour
             hp -= damage;
             if (IsDead)
             {
+                hp = 0;
                 OnDeath();
             }
+            healthbar.SetHp(hp);
+            Instantiate(combatTextPrefab, transform.position + Vector3.up, Quaternion.identity).OnInit(damage);
         }
+    }
+
+    public void Heal(float amount)
+    {
+        hp += amount;
+        healthbar.SetHp(hp);
     }
 
     protected void Changeanim(string animName)
